@@ -1,5 +1,11 @@
-CREATE TABLE IF NOT EXISTS books (
+CREATE TABLE IF NOT EXISTS author(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    age INTEGER
+    name  TEXT
+);
+CREATE TABLE IF NOT EXISTS books(
+    id_books INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_author INTEGER,
+    name_books TEXT,
+    age  INTEGER,
+    FOREIGN KEY (id_author) REFERENCES author(id) ON DELETE CASCADE
 );
