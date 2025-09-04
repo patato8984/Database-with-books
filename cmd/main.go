@@ -13,17 +13,11 @@ import (
 )
 
 type Books struct {
-	Author    string `json:"author"`
-	Id_author int    `json:"id_author"`
-	Id        int
-	Name      string `json:"name"`
-	Age       int    `json:"age"`
-}
-type Books_Get struct {
-	Id_author  int
-	Id_books   int
-	Name_books string
-	Age        int
+	Id          int    `json:"id"`
+	Name        string `json:"name"`
+	Age         int    `json:"age"`
+	Id_author   int    `json:"id_author"`
+	Name_author string `json:"name_author"`
 }
 type NewAuthor struct {
 	Name string `json:"name"`
@@ -58,15 +52,15 @@ func books(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 	switch r.Method {
 	case http.MethodGet:
-		rows, err := db.Query("SELECT id_books, id_author, name_books, age FROM books")
+		rows, err := db.Query("SELECT b.id_books, b.name_books, b.age, a.id AS id_author, a.name AS Name_author FROM books b JOIN author a ON b.id_author = a.id")
 		if err != nil {
 			http.Error(w, `{"status":"error in server"}`, http.StatusInternalServerError)
 		}
 		defer rows.Close()
-		var bok []Books_Get
+		var bok []Books
 		for rows.Next() {
-			var b Books_Get
-			if err := rows.Scan(&b.Id_books, &b.Id_author, &b.Name_books, &b.Age); err != nil {
+			var b Books
+			if err := rows.Scan(&b.Id, &b.Name, &b.Age, &b.Id_author, &b.Name_author); err != nil {
 				http.Error(w, `{"status":"error"}`, http.StatusBadRequest)
 				log.Print(err)
 				return
@@ -106,6 +100,10 @@ func author(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, `{"status": "error"}`, http.StatusBadRequest)
 			return
 		}
+		if a.Name == "" {
+			http.Error(w, `{"status":"Validation failed"}`, http.StatusBadRequest)
+			return
+		}
 		_, err := db.Exec("INSERT INTO author (name) VALUES (?)", a.Name)
 		if err != nil {
 			http.Error(w, `{"status": "error"}`, http.StatusBadRequest)
@@ -119,19 +117,39 @@ func Delauthor(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	idStr := strings.TrimPrefix(r.URL.Path, "/books/author/")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, `{"error": "ID должен быть числом"}`, http.StatusBadRequest)
+		return
+	}
 	switch r.Method {
 	case http.MethodDelete:
-		idStr := strings.TrimPrefix(r.URL.Path, "/books/author/")
-		id, err := strconv.Atoi(idStr)
-		if err != nil {
-			http.Error(w, `{"error": "ID должен быть числом"}`, http.StatusBadRequest)
-			return
-		}
 		_, er := db.Query("DELETE FROM books WHERE id_author = ?", id)
 		if er != nil {
 			http.Error(w, `{"status":"error"}`, http.StatusBadRequest)
+			return
 		}
 		json.NewEncoder(w).Encode(`{"status":"delete"}`)
+	case http.MethodGet:
+		rows, err := db.Query("SELECT a.id, a.name, b.id_books AS id, b.name_books AS Id, b.age AS age FROM author a JOIN books b ON a.id = b.id_author WHERE a.id = ?", id)
+		if err != nil {
+			http.Error(w, `{"status":"error"}`, http.StatusBadRequest)
+			log.Print(err)
+			return
+		}
+		var bok []Books
+		for rows.Next() {
+			var b Books
+			if err := rows.Scan(&b.Id_author, &b.Name_author, &b.Id, &b.Name, &b.Age); err != nil {
+				http.Error(w, `{"status":"error}`, http.StatusBadRequest)
+				log.Print(err)
+				return
+			}
+			bok = append(bok, b)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(bok)
 	}
 }
 func main() {
