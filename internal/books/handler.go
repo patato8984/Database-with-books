@@ -28,6 +28,8 @@ func (s *BookHandler) DelAuthor(w http.ResponseWriter, r *http.Request) {
 		log.Print(er)
 		return
 	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(`{"status":"the author and all books of the author have been deleted"}`)
 }
 func (s *BookHandler) DelBooks(w http.ResponseWriter, r *http.Request) {
 	idStr := strings.TrimPrefix(r.URL.Path, "/books/")
@@ -42,7 +44,7 @@ func (s *BookHandler) DelBooks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(`{"status":"deleted!"}`)
+	json.NewEncoder(w).Encode(`{"status":"books delete"}`)
 }
 
 func (s *BookHandler) GetAllBooks(w http.ResponseWriter, r *http.Request) {
@@ -85,6 +87,8 @@ func (s *BookHandler) CreateAuthorBooks(w http.ResponseWriter, r *http.Request) 
 		log.Print(er)
 		return
 	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(`{"status":"the author has been created"}`)
 }
 func (s *BookHandler) CreateBooks(w http.ResponseWriter, r *http.Request) {
 	var book models.Books
@@ -97,4 +101,6 @@ func (s *BookHandler) CreateBooks(w http.ResponseWriter, r *http.Request) {
 		log.Print(er)
 		return
 	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(`{"status":"the book has been created"}`)
 }

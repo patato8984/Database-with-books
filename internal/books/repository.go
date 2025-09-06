@@ -26,10 +26,10 @@ func (b *BookRepository) DelBooks(id int) error {
 	}
 	return nil
 }
-func (b *BookRepository) GetAllBooks(books []models.Books) ([]models.Books, error) {
+func (b *BookRepository) GetAllBooks() ([]models.Books, error) {
+	var books []models.Books
 	rows, err := b.db.Query("SELECT b.id_books, b.name_books, b.age, b.id_author AS id_author, a.name AS name_author FROM books b JOIN author a ON b.id_author = a.id")
 	if err != nil {
-		var books []models.Books
 		return books, err
 	}
 	defer rows.Close()
@@ -42,11 +42,13 @@ func (b *BookRepository) GetAllBooks(books []models.Books) ([]models.Books, erro
 	}
 	return books, nil
 }
-func (b *BookRepository) GetAllBooksAuthor(books []models.Books, id int) ([]models.Books, error) {
+func (b *BookRepository) GetAllBooksAuthor(id int) ([]models.Books, error) {
+	var books []models.Books
 	rows, err := b.db.Query("SELECT a.id, a.name, b.id_books AS id_books, b.name_books AS name_books, b.age AS age FROM author a JOIN books b ON a.id = b.id_author WHERE a.id = ?", id)
 	if err != nil {
 		return books, err
 	}
+	defer rows.Close()
 	for rows.Next() {
 		var book models.Books
 		if err := rows.Scan(&book.Id_author, &book.Name_author, &book.Id, &book.Name, &book.Age); err != nil {

@@ -31,24 +31,23 @@ func (r *BookService) DelBook(id int) error {
 	return nil
 }
 func (r *BookService) GetAllBooks() ([]models.Books, error) {
-	var books []models.Books
-	GetAllBooks, err := r.bookRapo.GetAllBooks(books)
+	GetAllBooks, err := r.bookRapo.GetAllBooks()
 	if err != nil {
 		return GetAllBooks, err
 	}
 	return GetAllBooks, nil
 }
 func (r *BookService) GetAllBooksAuthor(id int) ([]models.Books, error) {
-	var books []models.Books
-	GetALLBooks, err := r.bookRapo.GetAllBooksAuthor(books, id)
+
+	GetALLBooks, err := r.bookRapo.GetAllBooksAuthor(id)
 	if err != nil {
-		return books, err
+		return GetALLBooks, err
 	}
 	return GetALLBooks, nil
 }
 func (r *BookService) CreateAuthor(book models.Books) error {
 	if book.Name_author == "" {
-		return errors.New("dsa")
+		return errors.New("error json")
 	}
 	err := r.bookRapo.CreateAuthor(book)
 	if err != nil {
@@ -58,9 +57,9 @@ func (r *BookService) CreateAuthor(book models.Books) error {
 }
 func (r *BookService) CreateBooks(book models.Books) error {
 	if book.Name == "" {
-		return errors.New("dsa")
+		return errors.New("error json ")
 	} else if book.Age <= 0 {
-		return errors.New("dsa")
+		return errors.New("error json ")
 	}
 	if err := r.bookRapo.CreateBooks(book); err != nil {
 		return err
