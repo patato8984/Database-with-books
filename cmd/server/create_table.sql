@@ -1,3 +1,7 @@
+CREATE TABLE IF NOT EXISTS user(
+    user_name TEXT PRIMARY KEY,
+    user_password TEXT 
+);
 CREATE TABLE IF NOT EXISTS author(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT

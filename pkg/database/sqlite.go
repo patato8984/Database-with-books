@@ -8,8 +8,8 @@ import (
 	_ "modernc.org/sqlite"
 )
 
-func NewSQLiteConnection() (*sql.DB, error) {
-	db, err := sql.Open("sqlite", "books.db")
+func NewSQLiteConnection(db_patch string) (*sql.DB, error) {
+	db, err := sql.Open("sqlite", db_patch)
 	if err != nil {
 		return nil, err
 	}

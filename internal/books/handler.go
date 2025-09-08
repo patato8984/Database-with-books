@@ -17,7 +17,7 @@ func NewBookHandler(bookService *BookService) *BookHandler {
 	return &BookHandler{bookService: bookService}
 }
 func (s *BookHandler) DelAuthor(w http.ResponseWriter, r *http.Request) {
-	idStr := strings.TrimPrefix(r.URL.Path, "/books/author/")
+	idStr := strings.TrimPrefix(r.URL.Path, "/books/author/delete/")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, `{"status":"error url"}`, http.StatusBadRequest)
@@ -32,7 +32,7 @@ func (s *BookHandler) DelAuthor(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(`{"status":"the author and all books of the author have been deleted"}`)
 }
 func (s *BookHandler) DelBooks(w http.ResponseWriter, r *http.Request) {
-	idStr := strings.TrimPrefix(r.URL.Path, "/books/")
+	idStr := strings.TrimPrefix(r.URL.Path, "/books/delete")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, `{"status":"error url"}`, http.StatusBadRequest)
