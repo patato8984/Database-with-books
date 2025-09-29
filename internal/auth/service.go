@@ -1,30 +1,35 @@
 package auth
 
 import (
+	"errors"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
+type authRepository interface {
+	CreateUser(login, password string) error
+	GetHashPassworld(login string) (string, error)
+}
 type AuthService struct {
-	authRapo *AuthRepository
+	authRapo authRepository
 	jwtKye   string
 }
 
-func NewAuthService(authRapo *AuthRepository, kye string) *AuthService {
+func NewAuthService(authRapo authRepository, kye string) *AuthService {
 	return &AuthService{authRapo: authRapo, jwtKye: kye}
 }
 
 func (s *AuthService) Register(login, password string) error {
+	if login == "" || password == "" {
+		return errors.New("an empty username or password value")
+	}
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
-	if er := s.authRapo.CreateUser(login, string(hashPassword)); er != nil {
-		return er
-	}
-	return nil
+	return s.authRapo.CreateUser(login, string(hashPassword))
 }
 func (s *AuthService) GetToken(login, password string) (string, error) {
 	hashPassword, err := s.authRapo.GetHashPassworld(login)

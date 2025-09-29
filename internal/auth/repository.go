@@ -25,6 +25,7 @@ func (b *AuthRepository) GetHashPassworld(login string) (string, error) {
 	if err != nil {
 		return l, err
 	}
+	defer rows.Close()
 	for rows.Next() {
 		err := rows.Scan(&l)
 		if err != nil {

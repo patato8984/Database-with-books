@@ -8,6 +8,7 @@ import (
 type Config struct {
 	Jwt     string `json:"jwt_dew"`
 	DBpatch string `json:"db_patch"`
+	Port    string `json:"port"`
 }
 
 func LoadConfig(patch string) (*Config, error) {

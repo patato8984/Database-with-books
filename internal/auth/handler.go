@@ -22,7 +22,7 @@ func (h *AuthHandler) NewRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if er := h.AuthService.Register(newUser.Name, newUser.Password); er != nil {
-		http.Error(w, `{"status":"error"}`, http.StatusBadRequest)
+		http.Error(w, `{"status":"error"}`, http.StatusConflict)
 		return
 	}
 }

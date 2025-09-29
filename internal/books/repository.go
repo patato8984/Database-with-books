@@ -12,7 +12,7 @@ type BookRepository struct {
 func NewBookRepository(db *sql.DB) *BookRepository {
 	return &BookRepository{db: db}
 }
-func (b *BookRepository) DelAuthor(id int) error {
+func (b *BookRepository) DelAuthors(id int) error {
 	_, err := b.db.Exec("DELETE FROM books WHERE id_author = ?", id)
 	if err != nil {
 		return err

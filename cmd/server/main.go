@@ -94,5 +94,5 @@ func main() {
 		}
 	})))
 	log.Print("Яица")
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(cfg.Port, nil)
 }

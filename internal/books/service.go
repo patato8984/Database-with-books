@@ -5,18 +5,27 @@ import (
 	"myapp/internal/models"
 )
 
-type BookService struct {
-	bookRapo *BookRepository
+type bookRepository interface {
+	CreateAuthor(book models.Books) error
+	CreateBooks(book models.Books) error
+	DelAuthors(id int) error
+	DelBooks(id int) error
+	GetAllBooks() ([]models.Books, error)
+	GetAllBooksAuthor(id int) ([]models.Books, error)
 }
 
-func NewBookService(bookRapo *BookRepository) *BookService {
-	return &BookService{bookRapo: bookRapo}
+type BookService struct {
+	bookRapo bookRepository
+}
+
+func NewBookService(BookRapo bookRepository) *BookService {
+	return &BookService{bookRapo: BookRapo}
 }
 func (r *BookService) DelAuthor(id int) error {
 	if id <= 0 {
 		return errors.New("the id must not be equal to or less than zero")
 	}
-	if err := r.bookRapo.DelAuthor(id); err != nil {
+	if err := r.bookRapo.DelAuthors(id); err != nil {
 		return err
 	}
 	return nil
@@ -57,9 +66,9 @@ func (r *BookService) CreateAuthor(book models.Books) error {
 }
 func (r *BookService) CreateBooks(book models.Books) error {
 	if book.Name == "" {
-		return errors.New("error json ")
+		return errors.New("error json")
 	} else if book.Age <= 0 {
-		return errors.New("error json ")
+		return errors.New("error json")
 	}
 	if err := r.bookRapo.CreateBooks(book); err != nil {
 		return err
