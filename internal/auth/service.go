@@ -37,7 +37,7 @@ func (s *AuthService) GetToken(login, password string) (string, error) {
 		return "", err
 	}
 	if er := bcrypt.CompareHashAndPassword([]byte(hashPassword), []byte(password)); er != nil {
-		return "", er
+		return "", errors.New("an empty password")
 	}
 	clearTocen := jwt.NewWithClaims(jwt.SigningMethodHS512, jwt.MapClaims{"sub": login, "exp": time.Now().Add(time.Hour * 72).Unix()})
 	tocen, errr := clearTocen.SignedString([]byte(s.jwtKye))

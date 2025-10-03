@@ -12,5 +12,5 @@ func (m *MockAuthRepository) CreateUser(login, password string) error {
 }
 func (m *MockAuthRepository) GetHashPassworld(login string) (string, error) {
 	args := m.Called(login)
-	return "", args.Error(0)
+	return args.String(0), args.Error(1)
 }

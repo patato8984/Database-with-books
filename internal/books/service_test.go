@@ -12,11 +12,13 @@ import (
 
 func Test_ServiseCreateBooks(t *testing.T) {
 	tests := []struct {
+		nameTest   string
 		book       models.Books
 		shauldCall bool
 		errors     error
 	}{
 		{
+			nameTest: "valid",
 			book: models.Books{
 				Name:      "dasd",
 				Age:       1999,
@@ -26,6 +28,7 @@ func Test_ServiseCreateBooks(t *testing.T) {
 			errors:     nil,
 		},
 		{
+			nameTest: "book without a name",
 			book: models.Books{
 				Name:      "",
 				Age:       1999,
@@ -35,6 +38,7 @@ func Test_ServiseCreateBooks(t *testing.T) {
 			errors:     errors.New("error json"),
 		},
 		{
+			nameTest: "age zero",
 			book: models.Books{
 				Name:      "dsa",
 				Age:       0,
@@ -45,7 +49,7 @@ func Test_ServiseCreateBooks(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run("popka", func(t *testing.T) {
+		t.Run(tt.nameTest, func(t *testing.T) {
 			mockRapo := new(moks.MockBookRepository)
 			servis := books.NewBookService(mockRapo)
 			if tt.shauldCall {
@@ -68,33 +72,38 @@ func Test_ServiseCreateBooks(t *testing.T) {
 }
 func Test_ServiseDelAuthor(t *testing.T) {
 	tests := []struct {
+		nameTest   string
 		id         int
 		errors     error
 		shouldCall bool
 	}{
 		{
+			nameTest:   "valid",
 			id:         1,
 			errors:     nil,
 			shouldCall: true,
 		},
 		{
+			nameTest:   "valid",
 			id:         24,
 			errors:     nil,
 			shouldCall: true,
 		},
 		{
+			nameTest:   "zero id",
 			id:         0,
 			errors:     errors.New("the id must not be equal to or less than zero"),
 			shouldCall: false,
 		},
 		{
+			nameTest:   "negative ID",
 			id:         -432,
 			errors:     errors.New("the id must not be equal to or less than zero"),
 			shouldCall: false,
 		},
 	}
 	for _, tt := range tests {
-		t.Run("kaki", func(t *testing.T) {
+		t.Run(tt.nameTest, func(t *testing.T) {
 			mockRapo := new(moks.MockBookRepository)
 			testServise := books.NewBookService(mockRapo)
 			if tt.shouldCall {

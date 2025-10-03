@@ -2,6 +2,7 @@ package auth
 
 import (
 	"database/sql"
+	"errors"
 )
 
 type AuthRepository struct {
@@ -23,7 +24,7 @@ func (b *AuthRepository) GetHashPassworld(login string) (string, error) {
 	var l string
 	rows, err := b.db.Query("SELECT user_password FROM user WHERE user_name = ?", login)
 	if err != nil {
-		return l, err
+		return l, errors.New("the user was not found")
 	}
 	defer rows.Close()
 	for rows.Next() {
