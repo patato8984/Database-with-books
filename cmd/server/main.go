@@ -8,16 +8,19 @@ import (
 	"myapp/pkg/database"
 	"myapp/pkg/middleware"
 	"net/http"
+	"time"
 )
 
 func main() {
-	cfg, err := config.LoadConfig("config.json")
+	time.Sleep(5 * time.Second)
+	cfg, err := config.LoadConfig("configs/config.json")
 	if err != nil {
 		log.Panic(err)
 	}
-	db, er := database.NewSQLiteConnection(cfg.DBpatch)
+	connStr := "postgresql://user:password@db:5432/books?sslmode=disable"
+	db, er := database.NewPostgresConnection(connStr)
 	if er != nil {
-		log.Panic(err)
+		log.Panic(er)
 	}
 	defer db.Close()
 	newRepository := books.NewBookRepository(db)

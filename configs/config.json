@@ -1,0 +1,5 @@
+{
+    "jwt_dew" : "kakipuko",
+    "db_patch" : "postgresql://user:password@postgres:5432/books?sslmode=disable",
+    "port" : ":8080"
+}

@@ -3,6 +3,8 @@ package auth
 import (
 	"database/sql"
 	"errors"
+
+	_ "github.com/lib/pq"
 )
 
 type AuthRepository struct {
@@ -14,7 +16,7 @@ func NewAuthRepository(db *sql.DB) *AuthRepository {
 }
 
 func (b *AuthRepository) CreateUser(login, password string) error {
-	_, err := b.db.Exec("INSERT INTO user (user_name, user_password) VALUES (?, ?)", login, password)
+	_, err := b.db.Exec("INSERT INTO users (user_name, user_password) VALUES ($1, $2)", login, password)
 	if err != nil {
 		return err
 	}
@@ -22,7 +24,7 @@ func (b *AuthRepository) CreateUser(login, password string) error {
 }
 func (b *AuthRepository) GetHashPassworld(login string) (string, error) {
 	var l string
-	rows, err := b.db.Query("SELECT user_password FROM user WHERE user_name = ?", login)
+	rows, err := b.db.Query("SELECT user_password FROM users WHERE user_name = $1", login)
 	if err != nil {
 		return l, errors.New("the user was not found")
 	}

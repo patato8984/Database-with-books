@@ -3,6 +3,8 @@ package books
 import (
 	"database/sql"
 	"myapp/internal/models"
+
+	_ "github.com/lib/pq"
 )
 
 type BookRepository struct {
@@ -59,14 +61,14 @@ func (b *BookRepository) GetAllBooksAuthor(id int) ([]models.Books, error) {
 	return books, nil
 }
 func (b *BookRepository) CreateAuthor(bo models.Books) error {
-	_, err := b.db.Exec("INSERT INTO author (name) VALUES (?)", bo.Name_author)
+	_, err := b.db.Exec("INSERT INTO author (name) VALUES ($1)", bo.Name_author)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 func (b *BookRepository) CreateBooks(bo models.Books) error {
-	_, err := b.db.Exec("INSERT INTO books (id_author, name_books, age) VALUES (?, ?, ?)", bo.Id_author, bo.Name, bo.Age)
+	_, err := b.db.Exec("INSERT INTO books (id_author, name_books, age) VALUES ($1, $2, $3)", bo.Id_author, bo.Name, bo.Age)
 	if err != nil {
 		return err
 	}
