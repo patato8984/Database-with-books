@@ -1,5 +1,0 @@
-{
-    "jwt_dew" : "PykiKakiKreak",
-    "db_patch" : "books.db",
-    "port" : ":8080"
-}
